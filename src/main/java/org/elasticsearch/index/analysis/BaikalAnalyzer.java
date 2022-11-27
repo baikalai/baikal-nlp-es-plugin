@@ -2,7 +2,7 @@ package org.elasticsearch.index.analysis;
 
 import org.apache.lucene.analysis.*;
 
-import java.io.Reader;
+//import java.io.Reader;
 
 public class BaikalAnalyzer extends Analyzer {
     public BaikalAnalyzer() {

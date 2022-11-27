@@ -5,7 +5,7 @@ syntax = "proto3";
 
 package baikal.language;
 
-//import "google/api/annotations.proto";
+import "google/api/annotations.proto";
 //import "google/api/client.proto";
 //import "google/api/field_behavior.proto";
 
@@ -36,7 +36,11 @@ service LanguageService {
     // tokenization along with part of speech tags, dependency trees, and other
     // properties.
     rpc AnalyzeSyntax (AnalyzeSyntaxRequest) returns (AnalyzeSyntaxResponse) {
-    }
+        option (google.api.http) = {
+          post: "/baikal-nlp/api/v1/analyze"
+          body: "*"
+        };
+      }
     //
     //  // Classifies a document into categories.
     //  rpc ClassifyText(ClassifyTextRequest) returns (ClassifyTextResponse) {

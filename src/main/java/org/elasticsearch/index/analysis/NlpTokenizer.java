@@ -12,9 +12,9 @@ import java.nio.Buffer;
 import java.nio.CharBuffer;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Stream;
+// import java.util.stream.Stream;
 
-import static java.util.stream.Collectors.toList;
+// import static java.util.stream.Collectors.toList;
 
 final class MyToken {
     public String text;
@@ -31,10 +31,10 @@ public final class NlpTokenizer extends Tokenizer {
     private final TypeAttribute typeAtt = addAttribute(TypeAttribute.class);
 
     private Boolean doneGetInputString = false;
-    private String usingRawString = "";
+    //private String usingRawString = "";
     private int tokenIndex = 0;
     private int sentenceIndex = 0;
-    private Boolean morphemeCheckDoneOnTokens = false;
+    //private Boolean morphemeCheckDoneOnTokens = false;
     BaikalNlpCaller caller;
     List<Sentence> sentences;
     ArrayList<MyToken> tokens;
@@ -52,7 +52,7 @@ public final class NlpTokenizer extends Tokenizer {
         } while (readDone != -1);
 
         text = text.trim();
-        usingRawString = text;
+        //usingRawString = text;
         return caller.send(text);
     }
 
@@ -76,7 +76,8 @@ public final class NlpTokenizer extends Tokenizer {
     }
 
     private void makeTokens() {
-        tokens = new ArrayList();
+        tokens = new ArrayList<MyToken>();
+        //System.out.println(sentences);
         for (int i = 0; i < sentences.get(sentenceIndex).getTokensCount(); i++) {
             /*MyToken temp = new MyToken();
             temp.text = sentences.get(sentenceIndex).getTokens(i).getText().getContent();
@@ -86,7 +87,10 @@ public final class NlpTokenizer extends Tokenizer {
             tokens.add(temp);*/
             for (int j = 0; j < sentences.get(sentenceIndex).getTokens(i).getMorphemesCount(); j++) {
                 Morpheme morpheme = sentences.get(sentenceIndex).getTokens(i).getMorphemes(j);
-                String tokenName = caller.isEsToken(morpheme.getTag().name());
+                String text = morpheme.getText().getContent();
+                String tag = morpheme.getTag().name();
+                //System.out.println(text + " " + tag);
+                String tokenName = caller.isEsToken(tag);
                 if (!tokenName.isEmpty()) {
                     MyToken temp2 = new MyToken();
                     temp2.text = morpheme.getText().getContent();
