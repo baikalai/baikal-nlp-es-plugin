@@ -2,4 +2,4 @@ config.txt
 *.class
 target/*
 http_ca.crt
-
+nohup.out

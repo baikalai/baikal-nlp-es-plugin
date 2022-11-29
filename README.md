@@ -53,3 +53,32 @@ docker push elasticsearch-with-baikal-nlp:7.7.1
 # docker 실행
 
 docker run -p 9200:9200 -p 9300:9300 -e "discovery.type=single-node" elasticsearch-with-baikal-nlp:7.7.1
+
+
+# baikal nlp plugin 의 구성 요소 
+- analyzer name : baikal_analyzer
+- tokenizer name : baikal_tokenizer
+- filters name : baikal_token
+
+# elastics search 에서 형태소 분석기 설정 방법
+```
+    put /<index 이름>
+    {
+      "settings": {
+          "index" : {
+            "analysis": {                           // 분석에 대한 설정
+              "analyzer": {                         // 분석기
+                  "<분석기 설정명 | baikal_analyzer>": {                     // 분석기 설정 이름이거나 우리의 analyzer name ( 'baikal_analyzer' )
+                    "type": "< baikal_analyzer | custom >",                 // 분석기 설정 이름일 경우는 'baikal_analyzer', 우리의 analyzer name 일 경우는 'custom'
+                    "tokenizer": "< tokenizer 설정명 | baikal_tokenizer >", // tokenizer명. 별도의 tokenizer 설정이 있으면 그걸 사용하고, 아니면 기본값의 baikal_tokenizer
+                    "filter": [
+                        "lowercase",        // 소문자로 변환. 없어도 됨
+                        "baikal_token"
+                    ]
+                  }
+              }
+            }
+          }
+      } 
+    }
+```
