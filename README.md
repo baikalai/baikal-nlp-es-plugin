@@ -26,3 +26,30 @@ stop_tokens = E,IC,J,MAG,MAJ,MM,SP,SSC,SSO,SC,SE,XPN,XSA,XSN,XSV,UNA,NA,VSV
 # 한글 형태소 품사 (Part Of Speech, POS) 태그표
 http://kkma.snu.ac.kr/documents/index.jsp?doc=postag
 
+
+
+# docker file
+
+vi Dockerfile
+----------------------------
+FROM docker.elastic.co/elasticsearch/elasticsearch:7.7.1
+
+# copy config 
+COPY config.properties /usr/share/elasticsearch/data
+
+# copy plugin file
+COPY target/releases/elasticsearch-analysis-baikal-7.7.1.zip /usr/share/elasticsearch/data
+
+WORKDIR /usr/share/elasticsearch
+# install plugin
+RUN /usr/share/elasticsearch/bin/elasticsearch-plugin install --batch file:///usr/share/elasticsearch/data/elasticsearch-analysis-baikal-7.7.1.zip
+----------------------------
+
+docker build -t elasticsearch-with-baikal-nlp:7.7.1 .
+docker login
+docker push elasticsearch-with-baikal-nlp:7.7.1
+
+
+# docker 실행
+
+docker run -p 9200:9200 -p 9300:9300 -e "discovery.type=single-node" elasticsearch-with-baikal-nlp:7.7.1
