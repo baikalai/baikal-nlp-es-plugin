@@ -8,4 +8,5 @@ COPY target/releases/elasticsearch-analysis-baikal-7.7.1.zip /usr/share/elastics
 
 WORKDIR /usr/share/elasticsearch
 # install plugin
-RUN /usr/share/elasticsearch/bin/elasticsearch-plugin install --batch file:///usr/share/elasticsearch/data/elasticsearch-analysis-baikal-7.7.1.zip
+RUN bin/elasticsearch-plugin install analysis-nori
+RUN bin/elasticsearch-plugin install --batch file:///usr/share/elasticsearch/data/elasticsearch-analysis-baikal-7.7.1.zip

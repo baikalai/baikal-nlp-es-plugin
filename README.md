@@ -42,7 +42,8 @@ COPY target/releases/elasticsearch-analysis-baikal-7.7.1.zip /usr/share/elastics
 
 WORKDIR /usr/share/elasticsearch
 # install plugin
-RUN /usr/share/elasticsearch/bin/elasticsearch-plugin install --batch file:///usr/share/elasticsearch/data/elasticsearch-analysis-baikal-7.7.1.zip
+RUN bin/elasticsearch-plugin install analysis-nori
+RUN bin/elasticsearch-plugin install --batch file:///usr/share/elasticsearch/data/elasticsearch-analysis-baikal-7.7.1.zip
 ----------------------------
 
 docker build -t elasticsearch-with-baikal-nlp:7.7.1 .
@@ -81,4 +82,103 @@ docker run -p 9200:9200 -p 9300:9300 -e "discovery.type=single-node" elasticsear
           }
       } 
     }
+
+```
+
+- 동작가능한 예제
+```
+    put /baikal_test
+    {
+      "settings": {
+          "index" : {
+            "analysis": {                          
+              "analyzer": {                         
+                  "baikal_analyzer": {                     
+                    "type": "custom",                 
+                    "tokenizer": "baikal_tokenizer", 
+                    "filter": [
+                      "baikal_token"
+                    ]
+                  }
+              }
+            }
+          }
+      } 
+    }
+```
+
+- 형태소 분석 예제
+```
+POST /baikal_test/_analyze
+{
+    "text" : "아버지가 방에 들어가신다."
+}
+
+
+
+
+
+
+
+
+
+
+
+put /nori_test
+
+{
+  "settings": {
+	  "index" : {
+		"analysis": {                          
+		  "analyzer": {                         
+			  "nori_token_anayzer": {                     
+				"type": "custom",                 
+				"tokenizer": "nori_tokenizer", 
+				"filter": [
+				  "nori_part_of_speech"
+				]
+			  }
+		  }
+		}
+	  }
+  } 
+}
+
+
+POST nori_test/_analyze
+
+{
+	"analyzer" : "nori_token_anayzer",
+	"text" : "아버지가 방에 들어가신다."
+}
+
+
+
+put /baikal_test
+    {
+      "settings": {
+          "index" : {
+            "analysis": {                          
+              "analyzer": {                         
+                  "baikal_analyzer": {                     
+                    "type": "custom",                 
+                    "tokenizer": "baikal_tokenizer", 
+                    "filter": [
+                      "baikal_token"
+                    ]
+                  }
+              }
+            }
+          }
+      } 
+    }
+	
+	
+POST baikal_test/_analyze
+
+{
+	"analyzer" : "baikal_analyzer",
+	"text" : "아버지가 방에 들어가신다."
+}	
+
 ```
