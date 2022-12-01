@@ -1,5 +1,4 @@
-// Copyright 2019 BAIKAL AI Inc.
-//
+// Copyright 2019-2020 BAIKAL AI Inc.
 
 syntax = "proto3";
 
@@ -17,39 +16,39 @@ option java_outer_classname = "LanguageServiceProto";
 // Provides text analysis operations such as sentiment analysis and entity
 // recognition.
 service LanguageService {
-    //  // Analyzes the sentiment of the provided text.
-    //  rpc AnalyzeSentiment(AnalyzeSentimentRequest) returns (AnalyzeSentimentResponse) {
-    //  }
-    //
-    //  // Finds named entities (currently proper names and common nouns) in the text
-    //  // along with entity types, salience, mentions for each entity, and
-    //  // other properties.
-    //  rpc AnalyzeEntities(AnalyzeEntitiesRequest) returns (AnalyzeEntitiesResponse) {
-    //  }
-    //
-    //  // Finds entities, similar to [AnalyzeEntities][google.cloud.language.v1.LanguageService.AnalyzeEntities] in the text and analyzes
-    //  // sentiment associated with each entity and its mentions.
-    //  rpc AnalyzeEntitySentiment(AnalyzeEntitySentimentRequest) returns (AnalyzeEntitySentimentResponse) {
-    //  }
+  //  // Analyzes the sentiment of the provided text.
+  //  rpc AnalyzeSentiment(AnalyzeSentimentRequest) returns (AnalyzeSentimentResponse) {
+  //  }
+  //
+  //  // Finds named entities (currently proper names and common nouns) in the text
+  //  // along with entity types, salience, mentions for each entity, and
+  //  // other properties.
+  //  rpc AnalyzeEntities(AnalyzeEntitiesRequest) returns (AnalyzeEntitiesResponse) {
+  //  }
+  //
+  //  // Finds entities, similar to [AnalyzeEntities][google.cloud.language.v1.LanguageService.AnalyzeEntities] in the text and analyzes
+  //  // sentiment associated with each entity and its mentions.
+  //  rpc AnalyzeEntitySentiment(AnalyzeEntitySentimentRequest) returns (AnalyzeEntitySentimentResponse) {
+  //  }
 
-    // Analyzes the syntax of the text and provides sentence boundaries and
-    // tokenization along with part of speech tags, dependency trees, and other
-    // properties.
-    rpc AnalyzeSyntax (AnalyzeSyntaxRequest) returns (AnalyzeSyntaxResponse) {
-        option (google.api.http) = {
-          post: "/baikal-nlp/api/v1/analyze"
-          body: "*"
-        };
-      }
-    //
-    //  // Classifies a document into categories.
-    //  rpc ClassifyText(ClassifyTextRequest) returns (ClassifyTextResponse) {
-    //  }
+  // Analyzes the syntax of the text and provides sentence boundaries and
+  // tokenization along with part of speech tags, dependency trees, and other
+  // properties.
+  rpc AnalyzeSyntax (AnalyzeSyntaxRequest) returns (AnalyzeSyntaxResponse) {
+    option (google.api.http) = {
+      post: "/baikal-nlp/api/v1/analyze"
+      body: "*"
+    };
+  }
+  //
+  //  // Classifies a document into categories.
+  //  rpc ClassifyText(ClassifyTextRequest) returns (ClassifyTextResponse) {
+  //  }
 
-    //  // A convenience method that provides all the features that analyzeSentiment,
-    //  // analyzeEntities, and analyzeSyntax provide in one call.
-    //  rpc AnnotateText(AnnotateTextRequest) returns (AnnotateTextResponse) {
-    //  }
+  //  // A convenience method that provides all the features that analyzeSentiment,
+  //  // analyzeEntities, and analyzeSyntax provide in one call.
+  //  rpc AnnotateText(AnnotateTextRequest) returns (AnnotateTextResponse) {
+  //  }
 }
 
 // ################################################################ #
@@ -57,138 +56,151 @@ service LanguageService {
 // Represents the input to API methods.
 message Document {
 
-    // The content of the input in string format.
-    // Cloud audit logging exempt since it is based on user data.
-    string content = 2;
+  // The content of the input in string format.
+  // Cloud audit logging exempt since it is based on user data.
+  string content = 2;
 
-    // The language of the document (if not specified, the language is
-    // automatically detected). Both ISO and BCP-47 language codes are
-    // accepted.<br>
-    // [Language Support](/natural-language/docs/languages)
-    // lists currently supported languages for each API method.
-    // If the language (either specified by the caller or automatically detected)
-    // is not supported by the called API method, an `INVALID_ARGUMENT` error
-    // is returned.
-    string language = 4;
+  // The language of the document (if not specified, the language is
+  // automatically detected). Both ISO and BCP-47 language codes are
+  // accepted.<br>
+  // [Language Support](/natural-language/docs/languages)
+  // lists currently supported languages for each API method.
+  // If the language (either specified by the caller or automatically detected)
+  // is not supported by the called API method, an `INVALID_ARGUMENT` error
+  // is returned.
+  string language = 4;
 }
-
 // Represents a sentence in the input document.
 message Sentence {
-    // The sentence text.
-    TextSpan text = 1;
+  // The sentence text.
+  TextSpan text = 1;
 
-    // 어절단위로 쪼개는 것은
-    repeated Token tokens = 2;
+  // 어절단위로 쪼개는 것은
+  repeated Token tokens = 2;
 }
 
+
 message Morpheme {
-    // The sentence text.
-    TextSpan text = 1;
-    // 형태소 태그
-    Tag tag = 2;
-    // 형태소 분석 결과 확률
-    float probability = 3;
+  // The sentence text.
+  TextSpan text = 1;
+  // 형태소 태그
+  Tag tag = 2;
+  // 형태소 분석 결과 확률
+  float probability = 3;
 
-    // 유의어 번호
-    int32 disambiguation = 4;
+  // 유의어 번호
+  int32 disambiguation = 4;
 
-    // 내부적으로 pred 된 형태소는 0~42까지 반환하지만,
-    // 1~43까지 숫자로 쓰고, UNK은 0으로 바꾼다.
-    enum Tag {
-        //// 0 1 EC
-        //// 1 2 EF
-        //// 2 3 EP
-        //// 3 4 ETM
-        //// 4 5 ETN
-        //// 5 6 IC
-        //// 6 7 JC
-        //// 7 8 JKB
-        //// 8 9 JKC
-        //// 9 10 JKG
-        //// 10 11 JKO
-        //// 11 12 JKQ
-        //// 12 13 JKS
-        //// 13 14 JKV
-        //// 14 15 JX
-        //// 15 16 MAG
-        //// 16 17 MAJ
-        //// 17 18 MMA
-        //// 18 19 MMD
-        //// 19 20 MMN
-        //// 20 21 NA
-        //// 21 22 NF
-        //// 22 23 NNB
-        //// 23 24 NNG
-        //// 24 25 NNP
-        //// 25 26 NP
-        //// 26 27 NR
-        //// 27 28 SE
-        //// 28 29 SF
-        //// 29 30 SH
-        //// 30 31 SL
-        //// 31 32 SN
-        //// 32 33 SO
-        //// 33 34 SP
-        //// 34 35 SS
-        //// 35 36 SW
-        //// 36 37 VA
-        //// 37 38 VCN
-        //// 38 39 VCP
-        //// 39 40 VV
-        //// 40 41 VX
-        //// 41 42 XPN
-        //// 42 43 XR
-        //// 43 44 XSA
-        //// 44 45 XSN
-        //// 45 46 XSV
-        UNK = 0;
-        NNG = 24; // 일반 명사
-        NNP = 25; // 고유 명사
-        NNB = 23; // 의존 명사
-        NF = 22; // 명사 추정 범주
-        NR = 27; // 수사
-        NP = 26; // 대명사
-        VV = 40; // 동사
-        VA = 37; // 형용사
-        VX = 41; // 보조 용언
-        VCP = 39; // 긍정 지정사
-        VCN = 38; // 부정 지정사
-        MMA = 18; // 성상 관형사
-        MMD = 19; // 지시 관형사
-        MMN = 20; // 수 관형사
-        MAG = 16; // 일반 부사
-        MAJ = 17; // 접속 부사
-        IC = 6; // 감탄사
-        JKS = 13; // 주격 조사
-        JKC = 9; // 보격 조사
-        JKG = 10; // 관형격 조사
-        JKO = 11; // 목적격 조사
-        JKB = 8; // 부사격 조사
-        JKV = 14; // 호격 조사
-        JKQ = 12; // 인용격 조사
-        JX = 15; // 보조사
-        JC = 7; // 접속 조사
-        EP = 3; // 선어말 어미
-        EF = 2; // 종결 어미
-        EC = 1; // 연결 어미
-        ETN = 5; // 명사형 전성 어미
-        ETM = 4; // 관형형 전성 어미
-        XPN = 42; // 체언 접두사
-        XSN = 45; // 명사 파생 접미사
-        XSV = 46; // 동사 파생 접미사
-        XSA = 44; // 형용사 파생 접미사
-        XR = 43; // 어근
-        SF = 29; // 마침표물음표,느낌표
-        SP = 34; // 쉼표,가운뎃점,콜론,빗금
-        SS = 35; // 따옴표,괄호표,줄표
-        SE = 28; // 줄임표
-        SO = 33; // 붙임표(물결,숨김,빠짐)
-        SW = 36; // 기타기호 (논리수학기호,화폐기호)
-        NA = 21; // 분석불능범주
-        SL = 31; // 외국어
-        SH = 30; // 한자
-        SN = 32; // 숫자
-    }
+  // 사전에 없는 단어 표시
+  OutOfVocab out_of_vocab = 5;
+
+  // 사전에 없는 단어 정보 처리 결과
+  enum OutOfVocab {
+    IN_WORD_EMBEDDING = 0;  // 워드임베딩에 포함된 내용
+    OUT_OF_VOCAB = 1;       // 자동 추측
+    IN_CUSTOM_DICT = 2;     // 사용자 제공 사전에 있는 내용
+    IN_BUILTIN_DICT = 3;    // 기본 사전에 포함된 내용
+  }
+
+  // 내부적으로 pred 된 형태소는 0~42까지 반환하지만,
+  // 1~43까지 숫자로 쓰고, UNK은 0으로 바꾼다.
+  enum Tag {
+    //// 0 1 EC
+    //// 1 2 EF
+    //// 2 3 EP
+    //// 3 4 ETM
+    //// 4 5 ETN
+    //// 5 6 IC
+    //// 6 7 JC
+    //// 7 8 JKB
+    //// 8 9 JKC
+    //// 9 10 JKG
+    //// 10 11 JKO
+    //// 11 12 JKQ
+    //// 12 13 JKS
+    //// 13 14 JKV
+    //// 14 15 JX
+    //// 15 16 MAG
+    //// 16 17 MAJ
+    //// 17 18 MMA
+    //// 18 19 MMD
+    //// 19 20 MMN
+    //// 20 21 NA
+    //// 21 22 NF
+    //// 22 23 NNB
+    //// 23 24 NNG
+    //// 24 25 NNP
+    //// 25 26 NP
+    //// 26 27 NR
+    //// 27 28 NV
+    //// 28 29 SE
+    //// 29 30 SF
+    //// 30 31 SH
+    //// 31 32 SL
+    //// 32 33 SN
+    //// 33 34 SO
+    //// 34 35 SP
+    //// 35 36 SS
+    //// 36 37 SW
+    //// 37 38 VA
+    //// 38 39 VCN
+    //// 39 40 VCP
+    //// 40 41 VV
+    //// 41 42 VX
+    //// 42 43 XPN
+    //// 43 44 XR
+    //// 44 45 XSA
+    //// 45 46 XSN
+    //// 46 47 XSV
+    UNK = 0;
+    NNG = 24; // 일반 명사
+    NNP = 25; // 고유 명사
+    NNB = 23; // 의존 명사
+    NP = 26; // 대명사
+    NR = 27; // 수사
+    NF = 22; // 명사 추정 범주
+    NA = 21; // 분석불능범주
+    NV = 28; // 용언 추정 범주
+    VV = 41; // 동사
+    VA = 38; // 형용사
+    VX = 42; // 보조 용언
+    VCP = 40; // 긍정 지정사
+    VCN = 39; // 부정 지정사
+    MMA = 18; // 성상 관형사
+    MMD = 19; // 지시 관형사
+    MMN = 20; // 수 관형사
+    MAG = 16; // 일반 부사
+    MAJ = 17; // 접속 부사
+    IC = 6; // 감탄사
+    JKS = 13; // 주격 조사
+    JKC = 9; // 보격 조사
+    JKG = 10; // 관형격 조사
+    JKO = 11; // 목적격 조사
+    JKB = 8; // 부사격 조사
+    JKV = 14; // 호격 조사
+    JKQ = 12; // 인용격 조사
+    JX = 15; // 보조사
+    JC = 7; // 접속 조사
+    EP = 3; // 선어말 어미
+    EF = 2; // 종결 어미
+    EC = 1; // 연결 어미
+    ETN = 5; // 명사형 전성 어미
+    ETM = 4; // 관형형 전성 어미
+    XPN = 43; // 체언 접두사
+    XSN = 46; // 명사 파생 접미사
+    XSV = 47; // 동사 파생 접미사
+    XSA = 45; // 형용사 파생 접미사
+    XR = 44; // 어근
+    SF = 30; // 마침표,물음표,느낌표
+    SP = 35; // 쉼표,가운뎃점,콜론,빗금
+    SS = 36; // 따옴표,괄호표,줄표
+    SE = 29; // 줄임표
+    SO = 34; // 붙임표(물결,숨김,빠짐)
+    SW = 37; // 기타기호 (논리수학기호,화폐기호)
+    SL = 32; // 외국어
+    SH = 31; // 한자
+    SN = 33; // 숫자
+  }
 }
 
 //// Represents a phrase in the text that is a known entity, such as
@@ -303,46 +315,46 @@ message Morpheme {
 // languages that natively use different text encodings may access offsets
 // differently.
 enum EncodingType {
-    // If `EncodingType` is not specified, encoding-dependent information (such as
-    // `begin_offset`) will be set at `-1`.
-    NONE = 0;
+  // If `EncodingType` is not specified, encoding-dependent information (such as
+  // `begin_offset`) will be set at `-1`.
+  NONE = 0;
 
-    // Encoding-dependent information (such as `begin_offset`) is calculated based
-    // on the UTF-8 encoding of the input. C++ and Go are examples of languages
-    // that use this encoding natively.
-    UTF8 = 1;
+  // Encoding-dependent information (such as `begin_offset`) is calculated based
+  // on the UTF-8 encoding of the input. C++ and Go are examples of languages
+  // that use this encoding natively.
+  UTF8 = 1;
 
-    // Encoding-dependent information (such as `begin_offset`) is calculated based
-    // on the UTF-16 encoding of the input. Java and JavaScript are examples of
-    // languages that use this encoding natively.
-    UTF16 = 2;
+  // Encoding-dependent information (such as `begin_offset`) is calculated based
+  // on the UTF-16 encoding of the input. Java and JavaScript are examples of
+  // languages that use this encoding natively.
+  UTF16 = 2;
 
-    // Encoding-dependent information (such as `begin_offset`) is calculated based
-    // on the UTF-32 encoding of the input. Python is an example of a language
-    // that uses this encoding natively.
-    UTF32 = 3;
+  // Encoding-dependent information (such as `begin_offset`) is calculated based
+  // on the UTF-32 encoding of the input. Python is an example of a language
+  // that uses this encoding natively.
+  UTF32 = 3;
 }
 
 // Represents the smallest syntactic building block of the text.
 // 어절
 message Token {
-    // The token text.
-    TextSpan text = 1;
-    // 어절 내부의 형태소 분리
-    repeated Morpheme morphemes = 2;
+  // The token text.
+  TextSpan text = 1;
+  // 어절 내부의 형태소 분리
+  repeated Morpheme morphemes = 2;
 
-    // 어절 단위로
-    // Parts of speech tag for this token.
-    // PartOfSpeech part_of_speech = 2;
+  // 어절 단위로
+  // Parts of speech tag for this token.
+  // PartOfSpeech part_of_speech = 2;
 
-    // 의존구문 분석
-    // 유의어 분석
-    // Dependency tree parse for this token.
-    // DependencyEdge dependency_edge = 3;
+  // 의존구문 분석
+  // 유의어 분석
+  // Dependency tree parse for this token.
+  // DependencyEdge dependency_edge = 3;
 
-    // [Lemma](https://en.wikipedia.org/wiki/Lemma_%28morphology%29) of the token.
-    string lemma = 4;
-    string tagged = 5;
+  // [Lemma](https://en.wikipedia.org/wiki/Lemma_%28morphology%29) of the token.
+  string lemma = 4;
+  string tagged = 5;
 }
 
 //// Represents the feeling associated with the entire text or entities in
@@ -985,12 +997,12 @@ message Token {
 
 // Represents an output piece of text.
 message TextSpan {
-    // The content of the output text.
-    string content = 1;
+  // The content of the output text.
+  string content = 1;
 
-    // The API calculates the beginning offset of the content in the original
-    // document according to the [EncodingType][google.cloud.language.v1.EncodingType] specified in the API request.
-    int32 begin_offset = 2;
+  // The API calculates the beginning offset of the content in the original
+  // document according to the [EncodingType][google.cloud.language.v1.EncodingType] specified in the API request.
+  int32 begin_offset = 2;
 }
 
 //// Represents a category returned from the text classifier.
@@ -1069,34 +1081,34 @@ message TextSpan {
 
 // The syntax analysis request message.
 message AnalyzeSyntaxRequest {
-    // Input document.
-    Document document = 1;
+  // Input document.
+  Document document = 1;
 
-    // The encoding type used by the API to calculate offsets.
-    EncodingType encoding_type = 2;
+  // The encoding type used by the API to calculate offsets.
+  EncodingType encoding_type = 2;
 
-    // auto split sentence true이면 자동으로 문장 분리를 시도한다.
-    // 없으면 \n 을 기준으로 문장을 자른다.
-    // 기본값은 false 이다.
-    bool auto_split_sentence = 3;
+  // auto split sentence true이면 자동으로 문장 분리를 시도한다.
+  // 없으면 \n 을 기준으로 문장을 자른다.
+  // 기본값은 false 이다.
+  bool auto_split_sentence = 3;
 
-    // 커스텀 사전 도메인 정보
-    // 고유명사, 복합명사 사전에 기반하여 처리함.
-    string custom_domain = 4;
+  // 커스텀 사전 도메인 정보
+  // 고유명사, 복합명사 사전에 기반하여 처리함.
+  string custom_domain = 4;
 }
 
 // The syntax analysis response message.
 message AnalyzeSyntaxResponse {
-    // Sentences in the input document.
-    repeated Sentence sentences = 1;
+  // Sentences in the input document.
+  repeated Sentence sentences = 1;
 
-    // Tokens, along with their syntactic information, in the input document.
-    // repeated Token tokens = 2;
+  // Tokens, along with their syntactic information, in the input document.
+  // repeated Token tokens = 2;
 
-    // The language of the text, which will be the same as the language specified
-    // in the request or, if not specified, the automatically-detected language.
-    // See [Document.language][google.cloud.language.v1.Document.language] field for more details.
-    string language = 3;
+  // The language of the text, which will be the same as the language specified
+  // in the request or, if not specified, the automatically-detected language.
+  // See [Document.language][google.cloud.language.v1.Document.language] field for more details.
+  string language = 3;
 }
 
 //// The document classification request message.
