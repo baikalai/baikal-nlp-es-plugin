@@ -25,9 +25,9 @@ public class BaikalNlpCaller {
     LanguageServiceGrpc.LanguageServiceBlockingStub client;
     private final static Logger LOGGER = Logger.getGlobal();
     private List<String> stopTokens; // tokenMorphemes, 
-    final static String DEF_STOP_TOKENS =  "E,IC,J,MAG,MAJ,MM,SP,SSC,SSO,SC,SE,XPN,XSA,XSN,XSV,UNA,NA,VSV";
+    final static String DEF_STOP_TOKENS =  "E,IC,J,MAG,MAJ,MM,NA,NF,NV,SE,SF,SO,SP,SS,SW,VC,VX,XPN,XS";
     final static int DEF_PORT = 5656;
-    final static String DEF_ADDRESS = "localhost";
+    final static String DEF_ADDRESS = "10.3.8.44";
     /*
     Boolean isTest = false;
     String configPath;
