@@ -3,6 +3,7 @@ package org.elasticsearch.index.analysis;
 import baikal.ai.AnalyzeSyntaxResponse;
 import baikal.ai.Morpheme;
 import baikal.ai.Sentence;
+import baikal.ai.Token;
 import org.apache.lucene.analysis.Tokenizer;
 import org.apache.lucene.analysis.tokenattributes.*;
 import org.apache.lucene.util.AttributeFactory;
@@ -11,6 +12,7 @@ import java.io.IOException;
 import java.nio.Buffer;
 import java.nio.CharBuffer;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 // import java.util.stream.Stream;
 
@@ -32,12 +34,13 @@ public final class NlpTokenizer extends Tokenizer {
 
     private Boolean doneGetInputString = false;
     //private String usingRawString = "";
-    private int tokenIndex = 0;
-    private int sentenceIndex = 0;
+    //private int tokenIndex = 0;
+    //private int sentenceIndex = 0;
     //private Boolean morphemeCheckDoneOnTokens = false;
     BaikalNlpCaller caller;
-    List<Sentence> sentences;
-    ArrayList<MyToken> tokens;
+    //List<Sentence> sentences;
+    //ArrayList<MyToken> tokens;
+    Iterator<MyToken> itMyToken = null;
 
     public AnalyzeSyntaxResponse getInputString() throws IOException {
         int readDone = -1;
@@ -60,7 +63,7 @@ public final class NlpTokenizer extends Tokenizer {
         super(AttributeFactory.DEFAULT_ATTRIBUTE_FACTORY);
         caller = new BaikalNlpCaller();
     }
-
+/*
     private boolean isLastSentence() {
         if (sentences.size() == sentenceIndex + 1) {
             return true;
@@ -74,17 +77,39 @@ public final class NlpTokenizer extends Tokenizer {
         }
         return false;
     }
+ */
+    private ArrayList<MyToken> getWords(List<Sentence> sentences) {
+        ArrayList<MyToken> tokens = new ArrayList<MyToken>();
 
+        for( Sentence sentence : sentences) {
+            for( Token t : sentence.getTokensList() ) {
+                for( Morpheme morpheme : t.getMorphemesList()) {                    
+                    String text = morpheme.getText().getContent();
+                    String tag = morpheme.getTag().name();
+                    //System.out.println(text + " " + tag);
+                    String tokenName = caller.isEsToken(tag);
+                    if (!tokenName.isEmpty()) {
+                        MyToken temp2 = new MyToken();
+                        temp2.text = morpheme.getText().getContent();
+                        temp2.beginOffset = morpheme.getText().getBeginOffset();
+                        temp2.length = temp2.text.length();
+                        temp2.type = tokenName;
+                        temp2.isLast = false;
+                        temp2.isEmpty = false;
+                        tokens.add(temp2);
+                    }
+                }
+            }
+        }
+        return tokens;
+    }
+/*
     private void makeTokens() {
         tokens = new ArrayList<MyToken>();
         //System.out.println(sentences);
+        
         for (int i = 0; i < sentences.get(sentenceIndex).getTokensCount(); i++) {
-            /*MyToken temp = new MyToken();
-            temp.text = sentences.get(sentenceIndex).getTokens(i).getText().getContent();
-            temp.beginOffset = sentences.get(sentenceIndex).getTokens(i).getText().getBeginOffset();
-            temp.length = temp.text.length();
-            temp.type = "segment";
-            tokens.add(temp);*/
+
             for (int j = 0; j < sentences.get(sentenceIndex).getTokens(i).getMorphemesCount(); j++) {
                 Morpheme morpheme = sentences.get(sentenceIndex).getTokens(i).getMorphemes(j);
                 String text = morpheme.getText().getContent();
@@ -124,18 +149,44 @@ public final class NlpTokenizer extends Tokenizer {
             return temp;
         }
     }
+ */
 
     @Override
     public boolean incrementToken() throws IOException {
+        clearAttributes();
+        if (!doneGetInputString) {
+            // sentences = null;
+            AnalyzeSyntaxResponse response = getInputString();
+            if (response == null) return false;
+
+            List<Sentence> sentences = response.getSentencesList();
+            if (sentences == null || sentences.size() == 0) return false;
+            List<MyToken> tokens = getWords(sentences);
+            this.itMyToken = tokens.iterator();
+            
+        }
+        if( itMyToken != null && itMyToken.hasNext() ) {
+            MyToken item = itMyToken.next();
+            termAtt.append(item.text);
+            typeAtt.setType(item.type);
+            offsetAtt.setOffset(item.beginOffset, item.beginOffset + item.length);
+            return true;
+        }
+        return false;
+    }
+
+/* 
+    @Override
+    public boolean incrementTokenOld() throws IOException {
         // TODO proxy로 grpc 보내고 결과를 tokenizing 해서 token filter로 보내기
         clearAttributes();
         if (!doneGetInputString) {
-            sentences = null;
-            AnalyzeSyntaxResponse temp = getInputString();
+            // sentences = null;
+            AnalyzeSyntaxResponse response = getInputString();
             if (temp == null) return false;
 
             List<Sentence> tempList = temp.getSentencesList();
-            sentences = tempList;
+            // sentences = tempList;
             if (sentences == null || sentences.size() == 0) return false;
             makeTokens();
         }
@@ -155,28 +206,31 @@ public final class NlpTokenizer extends Tokenizer {
         }
         return true;
     }
-
+*/
     @Override
     public void close() throws IOException {
         super.close();
         doneGetInputString = false;
-        tokenIndex = 0;
-        sentenceIndex = 0;
+        itMyToken = null;
+        // tokenIndex = 0;
+        // sentenceIndex = 0;
     }
 
     @Override
     public void reset() throws IOException {
         super.reset();
         doneGetInputString = false;
-        tokenIndex = 0;
-        sentenceIndex = 0;
+        itMyToken = null;
+        // tokenIndex = 0;
+        // sentenceIndex = 0;
     }
 
     @Override
     public void end() throws IOException {
         super.end();
         doneGetInputString = false;
-        tokenIndex = 0;
-        sentenceIndex = 0;
+        itMyToken = null;
+        // tokenIndex = 0;
+        // sentenceIndex = 0;
     }
 }
