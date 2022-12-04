@@ -14,6 +14,9 @@ import java.nio.CharBuffer;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+
+import com.google.protobuf.util.JsonFormat;
+import java.util.logging.Logger;
 // import java.util.stream.Stream;
 
 // import static java.util.stream.Collectors.toList;
@@ -22,15 +25,19 @@ final class MyToken {
     public String text;
     public int beginOffset;
     public int length;
+    public int positionInc;
     public String type;
-    public boolean isLast;
-    public boolean isEmpty;
+    //public boolean isLast;
+    //public boolean isEmpty;
 }
 
 public final class NlpTokenizer extends Tokenizer {
+    private final static Logger LOGGER = Logger.getGlobal();
+
     private final CharTermAttribute termAtt = addAttribute(CharTermAttribute.class);
     private final OffsetAttribute offsetAtt = addAttribute(OffsetAttribute.class);
     private final TypeAttribute typeAtt = addAttribute(TypeAttribute.class);
+    private final PositionIncrementAttribute posIncAtt = addAttribute(PositionIncrementAttribute.class);
 
     private Boolean doneGetInputString = false;
     //private String usingRawString = "";
@@ -83,6 +90,7 @@ public final class NlpTokenizer extends Tokenizer {
 
         for( Sentence sentence : sentences) {
             for( Token t : sentence.getTokensList() ) {
+                int iMorpheme = 0;
                 for( Morpheme morpheme : t.getMorphemesList()) {                    
                     String text = morpheme.getText().getContent();
                     String tag = morpheme.getTag().name();
@@ -90,14 +98,28 @@ public final class NlpTokenizer extends Tokenizer {
                     String tokenName = caller.isEsToken(tag);
                     if (!tokenName.isEmpty()) {
                         MyToken temp2 = new MyToken();
-                        temp2.text = morpheme.getText().getContent();
+                        temp2.text = text;
                         temp2.beginOffset = morpheme.getText().getBeginOffset();
                         temp2.length = temp2.text.length();
                         temp2.type = tokenName;
-                        temp2.isLast = false;
-                        temp2.isEmpty = false;
+                        temp2.positionInc = 1;
+                        //temp2.isLast = false;
+                        //temp2.isEmpty = false;
                         tokens.add(temp2);
+
+                        // TODO : VV나 VA인경우 어절 전체를 등록한다.
+                        if( iMorpheme == 0 && (tokenName == "VV" ||  tokenName == "VA") && 
+                            t.getText().getContent() != text ) {
+                            MyToken token = new MyToken();
+                            token.text = t.getText().getContent();
+                            token.beginOffset = t.getText().getBeginOffset();
+                            token.length = token.text.length();
+                            token.type = tokenName;
+                            token.positionInc = 0;
+                            tokens.add(token);
+                        }
                     }
+                    iMorpheme++;
                 }
             }
         }
@@ -159,6 +181,12 @@ public final class NlpTokenizer extends Tokenizer {
             AnalyzeSyntaxResponse response = getInputString();
             if (response == null) return false;
 
+            try {
+                String jsonString = JsonFormat.printer().includingDefaultValueFields().print(response);
+                LOGGER.info(jsonString);
+            } catch(Exception e) {
+                e.printStackTrace();
+            }
             List<Sentence> sentences = response.getSentencesList();
             if (sentences == null || sentences.size() == 0) return false;
             List<MyToken> tokens = getWords(sentences);
@@ -170,6 +198,7 @@ public final class NlpTokenizer extends Tokenizer {
             termAtt.append(item.text);
             typeAtt.setType(item.type);
             offsetAtt.setOffset(item.beginOffset, item.beginOffset + item.length);
+            posIncAtt.setPositionIncrement(item.positionInc);
             return true;
         }
         return false;
