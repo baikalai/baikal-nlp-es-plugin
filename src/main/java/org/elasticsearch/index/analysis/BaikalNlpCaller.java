@@ -32,7 +32,7 @@ public class BaikalNlpCaller {
     Boolean isTest = false;
     String configPath;
     */
-    final static Boolean isTest = true;
+    final static Boolean isTest = false;
     String configPath = "";
     String ip;
     int port;
