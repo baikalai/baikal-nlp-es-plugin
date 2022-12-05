@@ -3,15 +3,6 @@ Elastic search plugin for BAIKAL pos tagger
 
 
 
-# config file
-"/usr/share/elasticsearch/data/config.properties"
-```
-NLP_server_address = localhost
-NLP_server_port = 5656
-stop_tokens = E,IC,J,MAG,MAJ,MM,SP,SSC,SSO,SC,SE,XPN,XSA,XSN,XSV,UNA,NA,VSV
-```
-
-
 
 # install elastic
 - 도커 방식의 8.5 설치 https://www.elastic.co/guide/en/elasticsearch/reference/8.5/docker.html
@@ -30,8 +21,8 @@ http://kkma.snu.ac.kr/documents/index.jsp?doc=postag
 
 # docker file
 
-vi Dockerfile
-----------------------------
+- vi Dockerfile
+```
 FROM docker.elastic.co/elasticsearch/elasticsearch:7.7.1
 
 # copy config 
@@ -44,22 +35,42 @@ WORKDIR /usr/share/elasticsearch
 # install plugin
 RUN bin/elasticsearch-plugin install analysis-nori
 RUN bin/elasticsearch-plugin install --batch file:///usr/share/elasticsearch/data/elasticsearch-analysis-baikal-7.7.1.zip
-----------------------------
+```
 
+- make plugin file ( re-pack.sh은 zip 파일 버그를 수정하는 기능 )
+```
+re-pack.sh
 docker build -t elasticsearch-with-baikal-nlp:7.7.1 .
+```
+
+- 도커 등록
+```
 docker login
 docker push elasticsearch-with-baikal-nlp:7.7.1
-
+```
 
 # docker 실행
 
 docker run -p 9200:9200 -p 9300:9300 -e "discovery.type=single-node" elasticsearch-with-baikal-nlp:7.7.1
 
 
+
+# config file
+"/usr/share/elasticsearch/data/config.properties"
+```
+nlp_server_address = localhost                                        // default localhost 
+nlp_server_port = 5656                                                // default 5656
+stoptags = E,IC,J,MAG,MAJ,MM,NA,NF,NV,SE,SF,SO,SP,SS,SW,VC,VX,XPN,XS  // default E,IC,J,MAG,MAJ,MM,NA,NF,NV,SE,SF,SO,SP,SS,SW,VC,VX,XPN,XS
+```
+
+
+
 # baikal nlp plugin 의 구성 요소 
 - analyzer name : baikal_analyzer
 - tokenizer name : baikal_tokenizer
 - filters name : baikal_token
+
+
 
 # elastics search 에서 형태소 분석기 설정 방법
 ```
@@ -85,44 +96,134 @@ docker run -p 9200:9200 -p 9300:9300 -e "discovery.type=single-node" elasticsear
 
 ```
 
-- 동작가능한 예제
+
+
+# baikal_tokenizer 설정
+nlp_server_address : nlp server 주소 ( default 값은 )
+nlp_server_port : nlp server port
+stoptags : E,IC,J,MAG,MAJ,MM,NA,NF,NV,SE,SF,SO,SP,SS,SW,VC,VX,XPN,XS
+
+- default 값은 config file 값에 정의되어 있음.
+
+
+# 동작가능한 예제
+- baikal_test 디폴트 값으로 생성
 ```
-    put /baikal_test
-    {
-      "settings": {
-          "index" : {
-            "analysis": {                          
-              "analyzer": {                         
-                  "baikal_analyzer": {                     
-                    "type": "custom",                 
-                    "tokenizer": "baikal_tokenizer", 
-                    "filter": [
-                      "baikal_token"
-                    ]
-                  }
-              }
+curl --location --request PUT 'gpu2.baikal.ai:9200/baikal_test' \
+--data-raw '{
+    "settings": {
+        "index": {
+            "analysis": {
+                "analyzer": {
+                    "baikal_analyzer": {
+                        "type": "custom",
+                        "tokenizer": "baikal_tokenizer",
+                        "filter": [
+                            "baikal_token"
+                        ]
+                    }
+                }
             }
-          }
-      } 
+        }
     }
+}'
 ```
+
+- baikal_test 디폴트 값으로 변경
+```
+curl --location --request PUT 'gpu2.baikal.ai:9200/baikal_test/_settings' \
+--data-raw '{
+    "index": {
+        "analysis": {
+            "analyzer": {
+                "baikal_analyzer": {
+                    "type": "custom",
+                    "tokenizer": "baikal_tokenizer",
+                    "filter": [
+                        "baikal_token"
+                    ]
+                }
+            }
+        }
+    }
+}'
+```
+
+- baikal_test 옵션값으로 생성
+```
+curl --location --request PUT 'gpu2.baikal.ai:9200/baikal_test' \
+--data-raw '{
+    "settings": {
+        "index": {
+            "analysis": {
+                "analyzer": {
+                    "baikal_analyzer": {
+                        "type": "custom",
+                        "tokenizer": "baikal_nlp_tokenizer",
+                        "filter": [
+                            "baikal_token"
+                        ]
+                    }
+                },
+                "tokenizer": {
+                    "baikal_nlp_tokenizer": {
+                        "type": "baikal_tokenizer",
+                        "nlp_server_address": "gpu2.baikal.ai",
+                        "nlp_server_port": 5656
+                    }
+                }
+            }
+        }
+    }
+}'
+```
+
+- baikal_test 옵션값 변경
+```
+curl --location --request PUT 'gpu2.baikal.ai:9200/baikal_test/_settings' \
+--data-raw '{
+    "index": {
+        "analysis": {
+            "analyzer": {
+                "baikal_analyzer": {
+                    "type": "custom",
+                    "tokenizer": "baikal_nlp_tokenizer",
+                    "filter": [
+                        "baikal_token"
+                    ]
+                }
+            },
+            "tokenizer": {
+                "baikal_nlp_tokenizer": {
+                    "type": "baikal_tokenizer",
+                    "nlp_server_address": "10.3.8.44",
+                    "nlp_server_port": 5656,
+                    "stoptags" : ["E","IC","J","MAG","MAJ","MM","NA","NF","NV","SE","SF","SO","SP","SS","SW","VC","VX","XPN","XS"]
+                }
+            }
+        }
+    }
+}'
+```
+
+- 설정 변경시 close, open 명령
+```
+curl --location --request POST 'gpu2.baikal.ai:9200/baikal_test/_close'
+curl --location --request POST 'gpu2.baikal.ai:9200/baikal_test/_open'
+```
+
 
 - 형태소 분석 예제
 ```
 POST /baikal_test/_analyze
 {
-    "text" : "아버지가 방에 들어가신다."
+    "analyzer": "baikal_analyzer",
+    "text": "아름다운 아버지가 방에 들어가신다.\n 아버지는 피자를 드신다"
 }
+```
 
 
-
-
-
-
-
-
-
-
+- nori test 예제
 
 put /nori_test
 
@@ -151,34 +252,4 @@ POST nori_test/_analyze
 	"analyzer" : "nori_token_anayzer",
 	"text" : "아버지가 방에 들어가신다."
 }
-
-
-
-put /baikal_test
-    {
-      "settings": {
-          "index" : {
-            "analysis": {                          
-              "analyzer": {                         
-                  "baikal_analyzer": {                     
-                    "type": "custom",                 
-                    "tokenizer": "baikal_tokenizer", 
-                    "filter": [
-                      "baikal_token"
-                    ]
-                  }
-              }
-            }
-          }
-      } 
-    }
-	
-	
-POST baikal_test/_analyze
-
-{
-	"analyzer" : "baikal_analyzer",
-	"text" : "아버지가 방에 들어가신다."
-}	
-
 ```

@@ -20,6 +20,9 @@ import java.util.logging.Logger;
 // import java.util.stream.Stream;
 
 // import static java.util.stream.Collectors.toList;
+import org.elasticsearch.common.settings.Settings;
+import org.elasticsearch.env.Environment;
+import org.elasticsearch.index.IndexSettings;
 
 final class MyToken {
     public String text;
@@ -49,6 +52,22 @@ public final class NlpTokenizer extends Tokenizer {
     //ArrayList<MyToken> tokens;
     Iterator<MyToken> itMyToken = null;
 
+
+    public NlpTokenizer(IndexSettings indexSettings, Environment environment,Settings settings) {
+        
+        this(getSettings(indexSettings, environment, settings));
+    }
+
+    public NlpTokenizer() {
+        this(BaikalNlpCaller.getSettingsFromConfig());
+    }
+
+    private NlpTokenizer(BaikalNlpCaller.NlpSettings settings) {
+        super(AttributeFactory.DEFAULT_ATTRIBUTE_FACTORY);
+        caller = new BaikalNlpCaller(settings);
+    }
+
+
     public AnalyzeSyntaxResponse getInputString() throws IOException {
         int readDone = -1;
         String text = "";
@@ -61,14 +80,25 @@ public final class NlpTokenizer extends Tokenizer {
             text += new String(buffer.array());
         } while (readDone != -1);
 
-        text = text.trim();
+        //text = text.trim();
         //usingRawString = text;
+        if( text.isEmpty() ) return null;
         return caller.send(text);
     }
 
-    public NlpTokenizer() {
-        super(AttributeFactory.DEFAULT_ATTRIBUTE_FACTORY);
-        caller = new BaikalNlpCaller();
+    private static BaikalNlpCaller.NlpSettings getSettings(IndexSettings indexSettings, Environment environment,Settings settings) {
+        BaikalNlpCaller.NlpSettings s = BaikalNlpCaller.getSettingsFromConfig();
+
+        List<String> stopTokens = Analysis.getWordList(environment, settings, "stoptags");
+        if( stopTokens != null ) {
+            s.stopTokens = stopTokens;
+            LOGGER.info("stoptags re setting.");
+        }
+        s.ip = settings.get("nlp_server_address", s.ip);
+        LOGGER.info("nlp_server_address = " + s.ip);
+        s.port = settings.getAsInt("nlp_server_port", s.port);
+        LOGGER.info("nlp_server_port = " + s.port);
+        return s;
     }
 /*
     private boolean isLastSentence() {
@@ -181,12 +211,14 @@ public final class NlpTokenizer extends Tokenizer {
             AnalyzeSyntaxResponse response = getInputString();
             if (response == null) return false;
 
+            /*
             try {
                 String jsonString = JsonFormat.printer().includingDefaultValueFields().print(response);
                 LOGGER.info(jsonString);
             } catch(Exception e) {
                 e.printStackTrace();
             }
+             */
             List<Sentence> sentences = response.getSentencesList();
             if (sentences == null || sentences.size() == 0) return false;
             List<MyToken> tokens = getWords(sentences);

@@ -27,7 +27,7 @@ public class BaikalNlpCaller {
     private List<String> stopTokens; // tokenMorphemes, 
     final static String DEF_STOP_TOKENS =  "E,IC,J,MAG,MAJ,MM,NA,NF,NV,SE,SF,SO,SP,SS,SW,VC,VX,XPN,XS";
     final static int DEF_PORT = 5656;
-    final static String DEF_ADDRESS = "10.3.8.44";
+    final static String DEF_ADDRESS = "localhost"; // "10.3.8.44";
     /*
     Boolean isTest = false;
     String configPath;
@@ -42,8 +42,8 @@ public class BaikalNlpCaller {
     public static class NlpSettings {
         public String ip;
         public int port;
-        public ArrayList<String> stopTokens;
-        public NlpSettings(String ip, int port, ArrayList<String> stopTokens ) {
+        public List<String> stopTokens;
+        public NlpSettings(String ip, int port, List<String> stopTokens ) {
             this.ip = ip;
             this.port = port;
             this.stopTokens = stopTokens;
@@ -61,20 +61,24 @@ public class BaikalNlpCaller {
                     if (pathToRead.isEmpty()) {
                         pathToRead = CONFIG_FILE;
                     }
-                    File path = new File(pathToRead);
-                    FileReader file = new FileReader(path);
-                
-                    Properties p = new Properties();			
-                    p.load(file); // 파일 열어줌
-                    String ip = p.getProperty("NLP_server_address" , DEF_ADDRESS); 
-                    int port = Integer.parseInt(p.getProperty("NLP_server_port", String.valueOf(DEF_PORT) )); 
-                    // String strs = p.getProperty("token_morphemes",  "NNP,NNG,NNB,NF,VV,SL,SH,SN"); 
-                    // tokenMorphemes = new ArrayList<String>(Arrays.asList(strs.split(",")));
-        
-                    String strs = p.getProperty("stop_tokens",  DEF_STOP_TOKENS); 
-                    ArrayList<String> stopTokens = new ArrayList<String>(Arrays.asList(strs.split(",")));
-                    return new NlpSettings(ip, port, stopTokens);
-                   
+                    try {
+                        File path = new File(pathToRead);
+                        FileReader file = new FileReader(path);
+                    
+                        Properties p = new Properties();			
+                        p.load(file); // 파일 열어줌
+                        String ip = p.getProperty("nlp_server_address" , DEF_ADDRESS); 
+                        int port = Integer.parseInt(p.getProperty("nlp_server_port", String.valueOf(DEF_PORT) )); 
+                        // String strs = p.getProperty("token_morphemes",  "NNP,NNG,NNB,NF,VV,SL,SH,SN"); 
+                        // tokenMorphemes = new ArrayList<String>(Arrays.asList(strs.split(",")));
+            
+                        String strs = p.getProperty("stoptags",  DEF_STOP_TOKENS); 
+                        ArrayList<String> stopTokens = new ArrayList<String>(Arrays.asList(strs.split(",")));
+                        return new NlpSettings(ip, port, stopTokens);
+                    } catch(Exception e) {
+                        LOGGER.warning(e.getMessage());
+                        return new NlpSettings(DEF_ADDRESS, DEF_PORT, new ArrayList<String>(Arrays.asList(DEF_STOP_TOKENS.split(","))));    
+                    }
         
                 } else {
                     return new NlpSettings(DEF_ADDRESS, DEF_PORT, new ArrayList<String>(Arrays.asList(DEF_STOP_TOKENS.split(","))));                    
