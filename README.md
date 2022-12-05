@@ -99,10 +99,11 @@ stoptags = E,IC,J,MAG,MAJ,MM,NA,NF,NV,SE,SF,SO,SP,SS,SW,VC,VX,XPN,XS  // default
 
 
 # baikal_tokenizer 설정
-nlp_server_address : nlp server 주소 ( default 값은 )
+```
+nlp_server_address : nlp server 주소 
 nlp_server_port : nlp server port
 stoptags : E,IC,J,MAG,MAJ,MM,NA,NF,NV,SE,SF,SO,SP,SS,SW,VC,VX,XPN,XS
-
+```
 - default 값은 config file 값에 정의되어 있음.
 
 
