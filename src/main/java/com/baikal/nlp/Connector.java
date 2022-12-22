@@ -1,9 +1,9 @@
 package com.baikal.nlp;
 
-import baikal.ai.AnalyzeSyntaxRequest;
-import baikal.ai.AnalyzeSyntaxResponse;
-import baikal.ai.Document;
-import baikal.ai.LanguageServiceGrpc;
+import bareun.ai.AnalyzeSyntaxRequest;
+import bareun.ai.AnalyzeSyntaxResponse;
+import bareun.ai.Document;
+import bareun.ai.LanguageServiceGrpc;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import io.grpc.StatusRuntimeException;
@@ -31,7 +31,7 @@ public class Connector {
     protected AnalyzeSyntaxResponse lastResponse;
 
     public final static int DEF_PORT = 5656;
-    public final static String DEF_ADDRESS = "localhost"; // "10.3.8.44";
+    public final static String DEF_ADDRESS = "nlp.bareun.ai"; // "10.3.8.44";
 
     public Connector() {
         this(DEF_ADDRESS, DEF_PORT)   ;
@@ -62,6 +62,7 @@ public class Connector {
                 response = client.analyzeSyntax(request);
 
             } catch (StatusRuntimeException e) {
+                e.printStackTrace();
                 LOGGER.warning(e.getMessage());
                 LOGGER.warning(text);
                 return null;
