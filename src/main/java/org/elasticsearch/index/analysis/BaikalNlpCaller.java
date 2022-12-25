@@ -21,22 +21,25 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.Properties;
 
-public class BaikalNlpCaller {
-    LanguageServiceGrpc.LanguageServiceBlockingStub client;
+import com.baikal.nlp.*;
+
+public class BaikalNlpCaller extends Connector {
+    // LanguageServiceGrpc.LanguageServiceBlockingStub client;
     private final static Logger LOGGER = Logger.getGlobal();
     private List<String> stopTokens; // tokenMorphemes, 
     final static String DEF_STOP_TOKENS =  "E,IC,J,MAG,MAJ,MM,NA,NF,NV,SE,SF,SO,SP,SS,SW,VC,VX,XPN,XS";
-    final static int DEF_PORT = 5656;
-    final static String DEF_ADDRESS = "localhost"; // "10.3.8.44";
+
+
+    final static String TEST_ADDRESS =  "10.3.8.44";
     /*
     Boolean isTest = false;
     String configPath;
     */
     final static Boolean isTest = false;
     String configPath = "";
-    String ip;
-    int port;
-    ManagedChannel channel;
+    //String ip;
+    //int port;
+    //ManagedChannel channel;
     final static String CONFIG_FILE =  "/usr/share/elasticsearch/data/config.properties";
 
     public static class NlpSettings {
@@ -81,7 +84,7 @@ public class BaikalNlpCaller {
                     }
         
                 } else {
-                    return new NlpSettings(DEF_ADDRESS, DEF_PORT, new ArrayList<String>(Arrays.asList(DEF_STOP_TOKENS.split(","))));                    
+                    return new NlpSettings(TEST_ADDRESS, DEF_PORT, new ArrayList<String>(Arrays.asList(DEF_STOP_TOKENS.split(","))));                    
                 }                
             } catch (Exception e) {
                 LOGGER.warning(e.getMessage());
@@ -97,12 +100,12 @@ public class BaikalNlpCaller {
     }
 
     public BaikalNlpCaller(NlpSettings settings) {
-        ip = settings.ip;
-        port = settings.port;
+        super(settings.ip, settings.port);
         stopTokens = settings.stopTokens;
         LOGGER.info(String.format("NLP SERVER - %s:%d", ip, port));
     }
 
+    /*
     public AnalyzeSyntaxResponse send(String text) {
         
         return AccessController.doPrivileged((PrivilegedAction<AnalyzeSyntaxResponse>) () -> {
@@ -126,6 +129,7 @@ public class BaikalNlpCaller {
             return response;
         });
     }
+     */
 
     boolean inIn(String s, List<String> list) {
         if( s == null || s == "" ) return false;
@@ -137,10 +141,8 @@ public class BaikalNlpCaller {
 
     public String isEsToken(String morpheme) {
         if( morpheme == null || morpheme == "" ) return "UNKOWN";
-        return !inIn(morpheme, stopTokens) ? morpheme : "";
+        return stopTokens==null || !inIn(morpheme, stopTokens) ? morpheme : "";
     }
 
-    public void shutdownChannel() {
-        channel.shutdown();
-    }
+
 }

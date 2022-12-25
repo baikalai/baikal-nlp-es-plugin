@@ -77,8 +77,7 @@ public final class NlpTokenizer extends Tokenizer {
             ((Buffer) buffer).clear();
             readDone = input.read(buffer);
             doneGetInputString = true;
-            if( readDone > 0 )
-                text += new String(buffer.array(), 0, readDone);
+            text += new String(buffer.array());
         } while (readDone != -1);
 
         //text = text.trim();
