@@ -3,7 +3,7 @@
 PRJ_DIR="$( cd "$( dirname "$0" )" && pwd -P )"
 RELEASE_DIR="$PRJ_DIR/target/releases"
 TMP_DIR="$RELEASE_DIR/tmp"
-OUT_FILE=elasticsearch-analysis-baikal-7.7.1.zip
+OUT_FILE=elasticsearch-analysis-baikal-8.5.2.zip
 
 echo "RELEASE_DIR " $RELEASE_DIR
 

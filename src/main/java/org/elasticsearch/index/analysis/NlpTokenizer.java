@@ -1,9 +1,9 @@
 package org.elasticsearch.index.analysis;
 
-import baikal.ai.AnalyzeSyntaxResponse;
-import baikal.ai.Morpheme;
-import baikal.ai.Sentence;
-import baikal.ai.Token;
+import bareun.ai.AnalyzeSyntaxResponse;
+import bareun.ai.Morpheme;
+import bareun.ai.Sentence;
+import bareun.ai.Token;
 import org.apache.lucene.analysis.Tokenizer;
 import org.apache.lucene.analysis.tokenattributes.*;
 import org.apache.lucene.util.AttributeFactory;
@@ -77,7 +77,8 @@ public final class NlpTokenizer extends Tokenizer {
             ((Buffer) buffer).clear();
             readDone = input.read(buffer);
             doneGetInputString = true;
-            text += new String(buffer.array());
+            if( readDone > 0 )
+                text += new String(buffer.array(), 0, readDone);
         } while (readDone != -1);
 
         //text = text.trim();

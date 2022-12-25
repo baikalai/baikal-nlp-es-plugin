@@ -1,9 +1,9 @@
 package org.elasticsearch.index.analysis;
 
-import baikal.ai.AnalyzeSyntaxRequest;
-import baikal.ai.AnalyzeSyntaxResponse;
-import baikal.ai.Document;
-import baikal.ai.LanguageServiceGrpc;
+import bareun.ai.AnalyzeSyntaxRequest;
+import bareun.ai.AnalyzeSyntaxResponse;
+import bareun.ai.Document;
+import bareun.ai.LanguageServiceGrpc;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import io.grpc.StatusRuntimeException;

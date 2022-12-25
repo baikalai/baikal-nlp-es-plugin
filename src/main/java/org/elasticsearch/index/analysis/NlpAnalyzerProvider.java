@@ -9,7 +9,7 @@ import org.elasticsearch.index.IndexSettings;
 public class NlpAnalyzerProvider extends AbstractIndexAnalyzerProvider<BaikalAnalyzer> {
     private final BaikalAnalyzer analyzer;
     public NlpAnalyzerProvider(IndexSettings indexSettings, Environment environment, String s, Settings settings) {
-        super(indexSettings, s, settings);
+        super(s, settings);
         analyzer = new BaikalAnalyzer();
     }
 

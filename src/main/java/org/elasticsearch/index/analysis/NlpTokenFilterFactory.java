@@ -6,8 +6,9 @@ import org.elasticsearch.env.Environment;
 import org.elasticsearch.index.IndexSettings;
 
 public class NlpTokenFilterFactory extends AbstractTokenFilterFactory {
-    public NlpTokenFilterFactory(IndexSettings indexSettings, Environment env, String name, Settings settings) {
-        super(indexSettings, name, settings);
+    //public NlpTokenFilterFactory(String name, Settings settings) {
+    public NlpTokenFilterFactory(IndexSettings indexSettings, Environment env, String name, Settings settings) {    
+        super(name, settings);
     }
     @Override
     public TokenStream create(TokenStream stream) {

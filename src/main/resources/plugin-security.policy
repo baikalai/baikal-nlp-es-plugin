@@ -1,5 +1,4 @@
 grant{
-    permission java.security.AllPermission;
     permission java.net.SocketPermission "*", "accept,connect,resolve";
     permission java.net.NetPermission "getProxySelector";
     permission java.lang.RuntimePermission "getClassLoader";
