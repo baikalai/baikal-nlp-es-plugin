@@ -40,7 +40,7 @@ public class TestBaikalAnalyzer extends TestCase {
             String input = TEST_STRS[i];
             BaikalAnalyzer a = new BaikalAnalyzer();
 
-            logger.debug( ">>>> input : " + input );
+            logger.info( ">>>> input : " + input );
             TokenStream ts = a.tokenStream("baikal", input);
 
             CharTermAttribute termAtt = ts.addAttribute(CharTermAttribute.class);
@@ -54,11 +54,11 @@ public class TestBaikalAnalyzer extends TestCase {
             
             while (ts.incrementToken()) {
                 if(!print_input) {
-                    logger.error( "input:{}",input);
+                    logger.info( "input:{}",input);
                     print_input = true;
                 }
                 strs.add(termAtt.toString());
-                logger.debug( ">>> TERM:{} / {} / {}~{} ", termAtt, typeAtt.type(), offsAtt.startOffset(),
+                logger.info( ">>> TERM:{} / {} / {}~{} ", termAtt, typeAtt.type(), offsAtt.startOffset(),
                         offsAtt.endOffset());
             }
             //assert(strs.size()>0);
