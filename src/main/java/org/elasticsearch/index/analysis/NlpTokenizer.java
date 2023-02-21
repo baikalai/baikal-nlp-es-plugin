@@ -1,28 +1,29 @@
 package org.elasticsearch.index.analysis;
 
-import bareun.ai.AnalyzeSyntaxResponse;
-import bareun.ai.Morpheme;
-import bareun.ai.Sentence;
-import bareun.ai.Token;
-import org.apache.lucene.analysis.Tokenizer;
-import org.apache.lucene.analysis.tokenattributes.*;
-import org.apache.lucene.util.AttributeFactory;
-
 import java.io.IOException;
 import java.nio.Buffer;
 import java.nio.CharBuffer;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-
-import com.google.protobuf.util.JsonFormat;
 import java.util.logging.Logger;
 // import java.util.stream.Stream;
 
+import org.apache.lucene.analysis.Tokenizer;
+import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
+import org.apache.lucene.analysis.tokenattributes.OffsetAttribute;
+import org.apache.lucene.analysis.tokenattributes.PositionIncrementAttribute;
+import org.apache.lucene.analysis.tokenattributes.TypeAttribute;
+import org.apache.lucene.util.AttributeFactory;
 // import static java.util.stream.Collectors.toList;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.env.Environment;
 import org.elasticsearch.index.IndexSettings;
+
+import ai.bareun.protos.AnalyzeSyntaxResponse;
+import ai.bareun.protos.Morpheme;
+import ai.bareun.protos.Sentence;
+import ai.bareun.protos.Token;
 
 final class MyToken {
     public String text;
@@ -47,7 +48,7 @@ public final class NlpTokenizer extends Tokenizer {
     //private int tokenIndex = 0;
     //private int sentenceIndex = 0;
     //private Boolean morphemeCheckDoneOnTokens = false;
-    BaikalNlpCaller caller;
+    BareunCaller caller = null;
     //List<Sentence> sentences;
     //ArrayList<MyToken> tokens;
     Iterator<MyToken> itMyToken = null;
@@ -59,12 +60,12 @@ public final class NlpTokenizer extends Tokenizer {
     }
 
     public NlpTokenizer() {
-        this(BaikalNlpCaller.getSettingsFromConfig());
+        this(BareunCaller.getSettingsFromConfig());
     }
 
-    private NlpTokenizer(BaikalNlpCaller.NlpSettings settings) {
+    private NlpTokenizer(BareunCaller.NlpSettings settings) {
         super(AttributeFactory.DEFAULT_ATTRIBUTE_FACTORY);
-        caller = new BaikalNlpCaller(settings);
+        caller = new BareunCaller(settings);
     }
 
 
@@ -87,8 +88,8 @@ public final class NlpTokenizer extends Tokenizer {
         return caller.send(text);
     }
 
-    private static BaikalNlpCaller.NlpSettings getSettings(IndexSettings indexSettings, Environment environment,Settings settings) {
-        BaikalNlpCaller.NlpSettings s = BaikalNlpCaller.getSettingsFromConfig();
+    private static BareunCaller.NlpSettings getSettings(IndexSettings indexSettings, Environment environment,Settings settings) {
+        BareunCaller.NlpSettings s = BareunCaller.getSettingsFromConfig();
 
         List<String> stopTokens = Analysis.getWordList(environment, settings, "stoptags");
         if( stopTokens != null ) {

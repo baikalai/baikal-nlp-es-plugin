@@ -56,6 +56,7 @@ docker run -p 9200:9200 -p 9300:9300 -e "discovery.type=single-node" elasticsear
 ```
 bareun_server_address = localhost                                        // default localhost 
 bareun_server_port = 5656                                                // default 5656
+bareun_api_key = YOUR API KEY                                            // no default
 stoptags = E,IC,J,MAG,MAJ,MM,NA,NF,NV,SE,SF,SO,SP,SS,SW,VC,VX,XPN,XS  // default E,IC,J,MAG,MAJ,MM,NA,NF,NV,SE,SF,SO,SP,SS,SW,VC,VX,XPN,XS
 ```
 

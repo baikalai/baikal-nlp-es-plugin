@@ -1,4 +1,4 @@
-package org.elasticsearch.plugin.analysis.baikal;
+package org.elasticsearch.plugin.analysis.bareun;
 
 import org.apache.lucene.analysis.Analyzer;
 import org.elasticsearch.index.analysis.*;
@@ -10,24 +10,24 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-public class NlpPlugin extends Plugin implements AnalysisPlugin {
+public class BareunPlugin extends Plugin implements AnalysisPlugin {
     public static String PLUGIN_NAME = "elasticsearch-analysis-baikal";
+
+
     @Override
     public Map<String, AnalysisModule.AnalysisProvider<TokenFilterFactory>> getTokenFilters() {
         Map<String, AnalysisModule.AnalysisProvider<TokenFilterFactory>> extra = new HashMap<>();
-
-        extra.put("baikal_token", NlpTokenFilterFactory::new);
-
+        extra.put("baikal_token", BareunTokenFilterFactory::new);
         return extra;
     }
 
     @Override
     public Map<String, AnalysisModule.AnalysisProvider<TokenizerFactory>> getTokenizers() {
-        return Collections.singletonMap("baikal_tokenizer", NlpTokenizerFactory::new);
+        return Collections.singletonMap("baikal_tokenizer", BareunTokenizerFactory::new);
     }
 
     @Override
     public Map<String, AnalysisModule.AnalysisProvider<AnalyzerProvider<? extends Analyzer>>> getAnalyzers() {
-        return Collections.singletonMap("baikal_analyzer", NlpAnalyzerProvider::new);
+        return Collections.singletonMap("baikal_analyzer", BareunAnalyzerProvider::new);
     }
 }

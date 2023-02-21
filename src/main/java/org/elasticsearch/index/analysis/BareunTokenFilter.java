@@ -7,10 +7,10 @@ import org.apache.lucene.analysis.tokenattributes.OffsetAttribute;
 
 import java.io.IOException;
 
-public final class NlpTokenFilter extends TokenFilter {
+public final class BareunTokenFilter extends TokenFilter {
     private final CharTermAttribute termAtt = addAttribute(CharTermAttribute.class);
     private final OffsetAttribute offsetAtt = addAttribute(OffsetAttribute.class);
-    protected NlpTokenFilter(TokenStream input) {
+    protected BareunTokenFilter(TokenStream input) {
         super(input);
     }
 

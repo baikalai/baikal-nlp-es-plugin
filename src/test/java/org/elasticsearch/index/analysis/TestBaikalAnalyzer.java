@@ -1,22 +1,15 @@
 package org.elasticsearch.index.analysis;
 
-import junit.framework.TestCase;
+import java.util.ArrayList;
+
 import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
 import org.apache.lucene.analysis.tokenattributes.OffsetAttribute;
 import org.apache.lucene.analysis.tokenattributes.TypeAttribute;
-
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import junit.framework.TestCase;
 
 public class TestBaikalAnalyzer extends TestCase {
     private static Logger logger = LoggerFactory.getLogger(TestBaikalAnalyzer.class.getSimpleName());
@@ -38,10 +31,10 @@ public class TestBaikalAnalyzer extends TestCase {
     public void testAnalyzer() throws Exception {
         for( int i=0; i<TEST_STRS.length; i++) {
             String input = TEST_STRS[i];
-            BaikalAnalyzer a = new BaikalAnalyzer();
+            BareunAnalyzer anal = new BareunAnalyzer();
 
             logger.info( ">>>> input : " + input );
-            TokenStream ts = a.tokenStream("baikal", input);
+            TokenStream ts = anal.tokenStream("baikal", input);
 
             CharTermAttribute termAtt = ts.addAttribute(CharTermAttribute.class);
             OffsetAttribute offsAtt = ts.addAttribute(OffsetAttribute.class);
@@ -49,7 +42,7 @@ public class TestBaikalAnalyzer extends TestCase {
 
             ts.reset();
 
-            ArrayList<String> strs = new ArrayList();
+            ArrayList<String> strs = new ArrayList<String>();
             Boolean print_input = false;
             
             while (ts.incrementToken()) {
@@ -65,7 +58,7 @@ public class TestBaikalAnalyzer extends TestCase {
 
             ts.end();
             ts.close();
-
+            anal.close();
         }    
     }
     /*

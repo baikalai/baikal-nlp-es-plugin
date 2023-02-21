@@ -6,15 +6,15 @@ import org.elasticsearch.env.Environment;
 import org.elasticsearch.index.IndexSettings;
 // import org.elasticsearch.index.analysis.AbstractIndexAnalyzerProvider;
 
-public class NlpAnalyzerProvider extends AbstractIndexAnalyzerProvider<BaikalAnalyzer> {
-    private final BaikalAnalyzer analyzer;
-    public NlpAnalyzerProvider(IndexSettings indexSettings, Environment environment, String s, Settings settings) {
+public class BareunAnalyzerProvider extends AbstractIndexAnalyzerProvider<BareunAnalyzer> {
+    private final BareunAnalyzer analyzer;
+    public BareunAnalyzerProvider(IndexSettings indexSettings, Environment environment, String s, Settings settings) {
         super(s, settings);
-        analyzer = new BaikalAnalyzer();
+        analyzer = new BareunAnalyzer();
     }
 
     @Override
-    public BaikalAnalyzer get() {
+    public BareunAnalyzer get() {
         return analyzer;
     }
 }

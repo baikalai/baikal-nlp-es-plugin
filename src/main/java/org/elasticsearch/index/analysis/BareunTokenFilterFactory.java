@@ -5,13 +5,13 @@ import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.env.Environment;
 import org.elasticsearch.index.IndexSettings;
 
-public class NlpTokenFilterFactory extends AbstractTokenFilterFactory {
+public class BareunTokenFilterFactory extends AbstractTokenFilterFactory {
     //public NlpTokenFilterFactory(String name, Settings settings) {
-    public NlpTokenFilterFactory(IndexSettings indexSettings, Environment env, String name, Settings settings) {    
+    public BareunTokenFilterFactory(IndexSettings indexSettings, Environment env, String name, Settings settings) {    
         super(name, settings);
     }
     @Override
     public TokenStream create(TokenStream stream) {
-        return new NlpTokenFilter(stream);
+        return new BareunTokenFilter(stream);
     }
 }
