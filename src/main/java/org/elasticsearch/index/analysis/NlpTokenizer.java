@@ -95,10 +95,10 @@ public final class NlpTokenizer extends Tokenizer {
             s.stopTokens = stopTokens;
             LOGGER.info("stoptags re setting.");
         }
-        s.ip = settings.get("nlp_server_address", s.ip);
-        LOGGER.info("nlp_server_address = " + s.ip);
-        s.port = settings.getAsInt("nlp_server_port", s.port);
-        LOGGER.info("nlp_server_port = " + s.port);
+        s.ip = settings.get("bareun_server_address", s.ip);
+        LOGGER.info("bareun_server_address = " + s.ip);
+        s.port = settings.getAsInt("bareun_server_port", s.port);
+        LOGGER.info("bareun_server_port = " + s.port);
         return s;
     }
 /*

@@ -1,7 +1,5 @@
-# baikal-nlp-es-plugin
-Elastic search plugin for BAIKAL pos tagger
-
-
+# bareun-es-plugin
+Elastic search plugin for bareun.
 
 
 # install elastic
@@ -15,7 +13,6 @@ Elastic search plugin for BAIKAL pos tagger
 
 # 한글 형태소 품사 (Part Of Speech, POS) 태그표
 http://kkma.snu.ac.kr/documents/index.jsp?doc=postag
-
 
 
 # docker file
@@ -57,18 +54,16 @@ docker run -p 9200:9200 -p 9300:9300 -e "discovery.type=single-node" elasticsear
 # config file
 "/usr/share/elasticsearch/data/config.properties"
 ```
-nlp_server_address = localhost                                        // default localhost 
-nlp_server_port = 5656                                                // default 5656
+bareun_server_address = localhost                                        // default localhost 
+bareun_server_port = 5656                                                // default 5656
 stoptags = E,IC,J,MAG,MAJ,MM,NA,NF,NV,SE,SF,SO,SP,SS,SW,VC,VX,XPN,XS  // default E,IC,J,MAG,MAJ,MM,NA,NF,NV,SE,SF,SO,SP,SS,SW,VC,VX,XPN,XS
 ```
 
 
-
-# baikal nlp plugin 의 구성 요소 
+# bareun plugin 의 구성 요소 
 - analyzer name : baikal_analyzer
 - tokenizer name : baikal_tokenizer
 - filters name : baikal_token
-
 
 
 # elastics search 에서 형태소 분석기 설정 방법
@@ -99,8 +94,8 @@ stoptags = E,IC,J,MAG,MAJ,MM,NA,NF,NV,SE,SF,SO,SP,SS,SW,VC,VX,XPN,XS  // default
 
 # baikal_tokenizer 설정
 ```
-nlp_server_address : nlp server 주소 
-nlp_server_port : nlp server port
+bareun_server_address : nlp server 주소 
+bareun_server_port : nlp server port
 stoptags : E,IC,J,MAG,MAJ,MM,NA,NF,NV,SE,SF,SO,SP,SS,SW,VC,VX,XPN,XS
 ```
 - default 값은 config file 값에 정의되어 있음.
@@ -168,8 +163,8 @@ curl --location --request PUT 'gpu2.baikal.ai:9200/baikal_test' \
                 "tokenizer": {
                     "baikal_nlp_tokenizer": {
                         "type": "baikal_tokenizer",
-                        "nlp_server_address": "gpu2.baikal.ai",
-                        "nlp_server_port": 5656
+                        "bareun_server_address": "gpu2.baikal.ai",
+                        "bareun_server_port": 5656
                     }
                 }
             }
@@ -196,8 +191,8 @@ curl --location --request PUT 'gpu2.baikal.ai:9200/baikal_test/_settings' \
             "tokenizer": {
                 "baikal_nlp_tokenizer": {
                     "type": "baikal_tokenizer",
-                    "nlp_server_address": "10.3.8.44",
-                    "nlp_server_port": 5656,
+                    "bareun_server_address": "10.3.8.44",
+                    "bareun_server_port": 5656,
                     "stoptags" : ["E","IC","J","MAG","MAJ","MM","NA","NF","NV","SE","SF","SO","SP","SS","SW","VC","VX","XPN","XS"]
                 }
             }

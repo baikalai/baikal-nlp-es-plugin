@@ -70,8 +70,8 @@ public class BaikalNlpCaller extends Connector {
                     
                         Properties p = new Properties();			
                         p.load(file); // 파일 열어줌
-                        String ip = p.getProperty("nlp_server_address" , DEF_ADDRESS); 
-                        int port = Integer.parseInt(p.getProperty("nlp_server_port", String.valueOf(DEF_PORT) )); 
+                        String ip = p.getProperty("bareun_server_address" , DEF_ADDRESS); 
+                        int port = Integer.parseInt(p.getProperty("bareun_server_port", String.valueOf(DEF_PORT) )); 
                         // String strs = p.getProperty("token_morphemes",  "NNP,NNG,NNB,NF,VV,SL,SH,SN"); 
                         // tokenMorphemes = new ArrayList<String>(Arrays.asList(strs.split(",")));
             
