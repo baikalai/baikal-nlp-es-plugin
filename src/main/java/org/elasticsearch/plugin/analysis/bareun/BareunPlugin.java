@@ -11,7 +11,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class BareunPlugin extends Plugin implements AnalysisPlugin {
-    public static String PLUGIN_NAME = "elasticsearch-analysis-baikal";
+    public static String PLUGIN_NAME = "elasticsearch-analysis-bareun";
 
 
     @Override

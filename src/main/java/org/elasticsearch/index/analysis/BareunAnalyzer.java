@@ -11,7 +11,7 @@ public class BareunAnalyzer extends Analyzer {
 
     @Override
     protected TokenStreamComponents createComponents(final String fieldName) {
-        Tokenizer tokenizer = new NlpTokenizer();
+        Tokenizer tokenizer = new BareunTokenizer();
         TokenStream stream = new BareunTokenFilter(tokenizer);
         return new TokenStreamComponents(tokenizer, stream);
     }

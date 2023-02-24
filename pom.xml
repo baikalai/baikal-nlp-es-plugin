@@ -5,10 +5,10 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.elasticsearch</groupId>
-    <artifactId>elasticsearch-analysis-baikal</artifactId>
+    <artifactId>elasticsearch-analysis-bareun</artifactId>
     <version>8.5.2</version>
     <packaging>jar</packaging>
-    <name>elasticsearch-analysis-baikal</name>
+    <name>elasticsearch-analysis-bareun</name>
     <properties>
         <java.version>1.9</java.version>
         <elasticsearch.version>8.5.2</elasticsearch.version>
@@ -26,17 +26,17 @@
         <dependency>
             <groupId>io.grpc</groupId>
             <artifactId>grpc-netty-shaded</artifactId>
-            <version>1.21.0</version>
+            <version>1.15.1</version>
         </dependency>
         <dependency>
             <groupId>io.grpc</groupId>
             <artifactId>grpc-protobuf</artifactId>
-            <version>1.21.0</version>
+            <version>1.15.1</version>
         </dependency>
         <dependency>
             <groupId>io.grpc</groupId>
             <artifactId>grpc-stub</artifactId>
-            <version>1.21.0</version>
+            <version>1.15.1</version>
         </dependency>
         <dependency>
             <groupId>io.grpc</groupId>
@@ -73,14 +73,14 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.11</version>
+            
         </dependency>
 
         <!-- integration test suite -->
         <dependency>
             <groupId>com.carrotsearch.randomizedtesting</groupId>
             <artifactId>randomizedtesting-runner</artifactId>
-            <version>2.3.2</version>
+            
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -160,7 +160,11 @@
             <artifactId>gson</artifactId>
             <version>2.10</version>
         </dependency>
-
+        <dependency>
+            <groupId>com.google.api.grpc</groupId>
+            <artifactId>proto-google-common-protos</artifactId>
+            <version>2.14.0</version>
+        </dependency>
 
     </dependencies>
 
@@ -178,9 +182,9 @@
                 <artifactId>protobuf-maven-plugin</artifactId>
                 <version>0.6.1</version>
                 <configuration>
-                    <protocArtifact>com.google.protobuf:protoc:3.7.1:exe:${os.detected.classifier}</protocArtifact>
+                    <protocArtifact>com.google.protobuf:protoc:3.21.10:exe:${os.detected.classifier}</protocArtifact>
                     <pluginId>grpc-java</pluginId>
-                    <pluginArtifact>io.grpc:protoc-gen-grpc-java:1.21.0:exe:${os.detected.classifier}</pluginArtifact>
+                    <pluginArtifact>io.grpc:protoc-gen-grpc-java:1.15.1:exe:${os.detected.classifier}</pluginArtifact>
                 </configuration>
                 <executions>
                     <execution>
@@ -284,4 +288,20 @@
             </build>
         </profile>
     </profiles>
+
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>4.13.1</version>
+            </dependency>
+            <dependency>
+                <groupId>com.carrotsearch.randomizedtesting</groupId>
+                <artifactId>randomizedtesting-runner</artifactId>
+                <version>2.8.0</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 </project>

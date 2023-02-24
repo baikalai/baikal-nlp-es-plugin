@@ -35,7 +35,7 @@ final class MyToken {
     //public boolean isEmpty;
 }
 
-public final class NlpTokenizer extends Tokenizer {
+public final class BareunTokenizer extends Tokenizer {
     private final static Logger LOGGER = Logger.getGlobal();
 
     private final CharTermAttribute termAtt = addAttribute(CharTermAttribute.class);
@@ -54,16 +54,16 @@ public final class NlpTokenizer extends Tokenizer {
     Iterator<MyToken> itMyToken = null;
 
 
-    public NlpTokenizer(IndexSettings indexSettings, Environment environment,Settings settings) {
+    public BareunTokenizer(IndexSettings indexSettings, Environment environment,Settings settings) {
         
         this(getSettings(indexSettings, environment, settings));
     }
 
-    public NlpTokenizer() {
+    public BareunTokenizer() {
         this(BareunCaller.getSettingsFromConfig());
     }
 
-    private NlpTokenizer(BareunCaller.NlpSettings settings) {
+    private BareunTokenizer(BareunCaller.NlpSettings settings) {
         super(AttributeFactory.DEFAULT_ATTRIBUTE_FACTORY);
         caller = new BareunCaller(settings);
     }

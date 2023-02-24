@@ -4,7 +4,7 @@ FROM docker.elastic.co/elasticsearch/elasticsearch:8.5.2
 COPY config.properties /usr/share/elasticsearch/data
 
 # copy plugin file
-COPY target/releases/elasticsearch-analysis-baikal-8.5.2.zip /usr/share/elasticsearch/data
+COPY target/releases/elasticsearch-analysis-bareun-8.5.2.zip /usr/share/elasticsearch/data
 
 # no authorization 
 RUN echo "xpack.security.enabled: false"  >> /usr/share/elasticsearch/config/elasticsearch.yml
@@ -12,4 +12,4 @@ RUN echo "xpack.security.enabled: false"  >> /usr/share/elasticsearch/config/ela
 WORKDIR /usr/share/elasticsearch
 # install plugin
 RUN bin/elasticsearch-plugin install analysis-nori
-RUN bin/elasticsearch-plugin install --batch file:///usr/share/elasticsearch/data/elasticsearch-analysis-baikal-8.5.2.zip
+RUN bin/elasticsearch-plugin install --batch file:///usr/share/elasticsearch/data/elasticsearch-analysis-bareun-8.5.2.zip

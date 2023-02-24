@@ -11,8 +11,8 @@ import org.slf4j.LoggerFactory;
 
 import junit.framework.TestCase;
 
-public class TestBaikalAnalyzer extends TestCase {
-    private static Logger logger = LoggerFactory.getLogger(TestBaikalAnalyzer.class.getSimpleName());
+public class TestBareunAnalyzer extends TestCase {
+    private static Logger logger = LoggerFactory.getLogger(TestBareunAnalyzer.class.getSimpleName());
     private static final String[] TEST_STRS = {
         "아버지가 the game 방에 들어가신다\n어머니는 부엌에 들어가시지 않고 피자를 드신다.",
         "너의 이름은 무엇이니?",
@@ -24,7 +24,7 @@ public class TestBaikalAnalyzer extends TestCase {
 
     };
 
-    public TestBaikalAnalyzer(String fName) {
+    public TestBareunAnalyzer(String fName) {
         super(fName);
     }
 
@@ -34,6 +34,7 @@ public class TestBaikalAnalyzer extends TestCase {
             BareunAnalyzer anal = new BareunAnalyzer();
 
             logger.info( ">>>> input : " + input );
+            // TokenStream ts = anal.tokenStream("baikal", input);
             TokenStream ts = anal.tokenStream("baikal", input);
 
             CharTermAttribute termAtt = ts.addAttribute(CharTermAttribute.class);
@@ -327,7 +328,7 @@ public class TestBaikalAnalyzer extends TestCase {
      */
 
     public static void main(String[] args) {
-        TestBaikalAnalyzer test = new TestBaikalAnalyzer("testAnalyzer");
+        TestBareunAnalyzer test = new TestBareunAnalyzer("testAnalyzer");
         try {
             test.runTest();
         } catch(Throwable e) {

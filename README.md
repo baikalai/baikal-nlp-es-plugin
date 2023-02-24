@@ -25,34 +25,33 @@ FROM docker.elastic.co/elasticsearch/elasticsearch:8.5.2
 COPY config.properties /usr/share/elasticsearch/data
 
 # copy plugin file
-COPY target/releases/elasticsearch-analysis-baikal-8.5.2.zip /usr/share/elasticsearch/data
+COPY target/releases/elasticsearch-analysis-bareun-8.5.2.zip /usr/share/elasticsearch/data
 
 WORKDIR /usr/share/elasticsearch
 # install plugin
 RUN bin/elasticsearch-plugin install analysis-nori
-RUN bin/elasticsearch-plugin install --batch file:///usr/share/elasticsearch/data/elasticsearch-analysis-baikal-8.5.2.zip
+RUN bin/elasticsearch-plugin install --batch file:///usr/share/elasticsearch/data/elasticsearch-analysis-bareun-8.5.2.zip
 ```
 
 - make plugin file ( re-pack.sh은 zip 파일 버그를 수정하는 기능 )
 ```
 re-pack.sh
-docker build -t elasticsearch-with-baikal-nlp:8.5.2 .
+docker build -t elasticsearch-with-bareun:8.5.2 .
 ```
 
 - 도커 등록
 ```
 docker login
-docker push elasticsearch-with-baikal-nlp:8.5.2
+docker push elasticsearch-with-bareun:8.5.2
 ```
 
 # docker 실행
 
-docker run -p 9200:9200 -p 9300:9300 -e "discovery.type=single-node" elasticsearch-with-baikal-nlp:8.5.2
-
+docker run -p 9200:9200 -p 9300:9300 -e "discovery.type=single-node" \
+    elasticsearch-with-bareun:8.5.2
 
 
 # config file
-"/usr/share/elasticsearch/data/config.properties"
 ```
 bareun_server_address = localhost                                        // default localhost 
 bareun_server_port = 5656                                                // default 5656
@@ -194,6 +193,7 @@ curl --location --request PUT 'gpu2.baikal.ai:9200/baikal_test/_settings' \
                     "type": "baikal_tokenizer",
                     "bareun_server_address": "10.3.8.44",
                     "bareun_server_port": 5656,
+                    "bareun_api_key": "YOUR-KEY",
                     "stoptags" : ["E","IC","J","MAG","MAJ","MM","NA","NF","NV","SE","SF","SO","SP","SS","SW","VC","VX","XPN","XS"]
                 }
             }

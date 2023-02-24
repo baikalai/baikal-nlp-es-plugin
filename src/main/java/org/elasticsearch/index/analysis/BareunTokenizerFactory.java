@@ -19,6 +19,6 @@ public class BareunTokenizerFactory extends AbstractTokenizerFactory {
 
     @Override
     public Tokenizer create() {
-        return new NlpTokenizer(indexSettings, environment, settings);
+        return new BareunTokenizer(indexSettings, environment, settings);
     }
 }
